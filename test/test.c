@@ -1,90 +1,214 @@
-#include <CUnit/Basic.h>
-#include <CUnit/CUnit.h>
+#include<stdio.h>
+#include<conio.h>
+#include<string.h>
+#include<process.h>
+#include<stdlib.h>
+#include<dos.h>
 
-#include <calculator.h>
-#define PROJECT_NAME    "contact management system"
+struct contact
+{
+long ph;
+char name[20],add[20],email[30];
+}list;
 
-void test_addition(void);
-void test_subtraction(void);
-void test_multiplication(void);
-void test_division(void);
-void test_modulus(void);
-void test_power(void);
-void test_factorial(void);
+char query[20],name[20];
+FILE *fp, *ft;
+int i,n,ch,l,found;
 
 int main()
 {
-   if (CUE_SUCCESS != CU_initialize_registry())
-    return CU_get_error();
-  CU_pSuite suite = CU_add_suite(PROJECT_NAME, 0, 0);
-  
-  CU_add_test(suite, "addition", test_addition);
-  CU_add_test(suite, "subtraction", test_subtraction);
-  CU_add_test(suite, "multiplication", test_multiplication);
-  CU_add_test(suite, "division", test_division);
-  CU_add_test(suite, "modulus", test_modulus);
-  CU_add_test(suite, "power", test_power);
-  CU_add_test(suite, "factorial", test_factorial);
-  
-  CU_basic_set_mode(CU_BRM_VERBOSE);
-  CU_basic_run_tests();
-  CU_cleanup_registry();
-  return 0;
- }
- 
- void test_addition(void)
- {
-          CU_ASSERT(70 == addition(50, 20));
-		  CU_ASSERT(30000 == addition(15000, 15000));
-		  
-		  CU_ASSERT(1550 == addition(110, 1220));
- }
- 
- void test_subtraction(void)
- {
-          CU_ASSERT(700 == subtraction(1500, 800));
-          CU_ASSERT(-6 == subtraction(0, 6));
-		  
-          CU_ASSERT(35 == subtraction(78, 10));
- }
- 
- void test_multiplication(void)
- {
-          CU_ASSERT(70000 == multiplication(700, 100));
-	  CU_ASSERT(0 == multiplication(7, 0));
-		  
-          CU_ASSERT(4 == multiplication(3, 2));
- }
- 
- void test_division(void)
- {
-          CU_ASSERT(0 == division(3, 0)); 
-          CU_ASSERT(90 == division(900, 10));
-		  
-	  CU_ASSERT(9 == division(80, 10));
- }
- 
- void test_modulus(void)
- {
-          CU_ASSERT(0 == modulus(60, 10));
-	  CU_ASSERT(5 == modulus(35, 6));
-		  
-	  CU_ASSERT(2 == modulus(43, 7));
- }
- 
- void test_power(void)
- {
-           CU_ASSERT(9 == power(3, 2));
-	   CU_ASSERT(1 == power(3, 0));
-		   
-	   CU_ASSERT(80 == power(3, 4));
- }
- 
- void test_factorial(void)
- {
-             CU_ASSERT(6 == factorial(3));
-	     CU_ASSERT(1 == factorial(0));
-	     CU_ASSERT(1 == factorial(1));
-			 
-	     CU_ASSERT(22 == factorial(4));
- }
+
+
+
+
+main:
+system("cls");    /* ************Main menu ***********************  */
+printf("\n\t **** Welcome to contact Manager ****");
+printf("\n\n\n\t\t\tMAIN MENU\n\t\t=====================\n\t\t[1] Add a new Contact\n\t\t[2] List all Contacts\n\t\t[3] Search for contact\n\t\t[4] Edit a Contact\n\t\t[5] Delete a Contact\n\t\t[0] Exit\n\t\t=================\n\t\t");
+printf("Enter the choice:");
+scanf("%d",&ch);
+
+switch(ch)
+{
+case 0:
+printf("\n\n\t\tAre you sure u want to exit?");
+break;
+/* *********************add new contacts************  */
+case 1:
+
+system("cls");
+fp=fopen("contact.dll","a");
+for (;;)
+{ fflush(stdin);
+printf("To exit enter blank space in the name input\nName (Use identical):");
+scanf("%[^\n]",&list.name);
+if(stricmp(list.name,"")==0 || stricmp(list.name," ")==0)
+break;
+fflush(stdin);
+printf("Phone:");
+scanf("%ld",&list.ph);
+fflush(stdin);
+printf("address:");
+scanf("%[^\n]",&list.add);
+fflush(stdin);
+printf("email address:");
+gets(list.email);
+printf("\n");
+fwrite(&list,sizeof(list),1,fp);
+}
+fclose(fp);
+break;
+
+/* *********************list of contacts*************************  */
+case 2:
+system("cls");
+printf("\n\t\t================================\n\t\t\tLIST OF CONTACTS\n\t\t================================\n\nName\t\tPhone No\t    Address\t\tE-mail ad.\n=================================================================\n\n");
+
+for(i=97;i<=122;i=i+1)
+{
+
+fp=fopen("contact.dll","r");
+fflush(stdin);
+found=0;
+while(fread(&list,sizeof(list),1,fp)==1)
+{
+if(list.name[0]==i || list.name[0]==i-32)
+{
+printf("\nName\t: %s\nPhone\t: %ld\nAddress\t: %s\nEmail\t: %s\n",list.name,
+list.ph,list.add,list.email);
+found++;
+}
+}
+if(found!=0)
+{
+    printf("=========================================================== [%c]-(%d)\n\n",i-32,found);
+    getch();
+
+}
+fclose(fp);
+
+}
+
+break;
+
+
+
+/* *******************search contacts**********************  */
+case 3:
+system("cls");
+do
+{
+found=0;
+printf("\n\n\t..::CONTACT SEARCH\n\t===========================\n\t..::Name of contact to search: ");
+fflush(stdin);
+scanf("%[^\n]",&query);
+l=strlen(query);
+fp=fopen("contact.dll","r");
+
+system("cls");
+printf("\n\n..::Search result for '%s' \n===================================================\n",query);
+while(fread(&list,sizeof(list),1,fp)==1)
+{
+for(i=0;i<=l;i++)
+name[i]=list.name[i];
+name[l]='\0';
+if(stricmp(name,query)==0)
+{
+printf("\n..::Name\t: %s\n..::Phone\t: %ld\n..::Address\t: %s\n..::Email\t:%s\n",list.name,list.ph,list.add,list.email);
+found++;
+if (found%4==0)
+{
+printf("..::Press any key to continue...");
+getch();
+}
+}
+}
+
+if(found==0)
+printf("\n..::No match found!");
+else
+printf("\n..::%d match(s) found!",found);
+fclose(fp);
+printf("\n ..::Try again?\n\n\t[1] Yes\t\t[0] No\n\t");
+scanf("%d",&ch);
+}while(ch==1);
+break;
+
+
+/* *********************edit contacts************************/
+case 4:
+system("cls");
+fp=fopen("contact.dll","r");
+ft=fopen("temp.dat","w");
+fflush(stdin);
+printf("..::Edit contact\n===============================\n\n\t..::Enter the name of contact to edit:");
+scanf("%[^\n]",name);
+while(fread(&list,sizeof(list),1,fp)==1)
+{
+if(stricmp(name,list.name)!=0)
+fwrite(&list,sizeof(list),1,ft);
+}
+fflush(stdin);
+printf("\n\n..::Editing '%s'\n\n",name);
+printf("..::Name(Use identical):");
+scanf("%[^\n]",&list.name);
+fflush(stdin);
+printf("..::Phone:");
+scanf("%ld",&list.ph);
+fflush(stdin);
+printf("..::address:");
+scanf("%[^\n]",&list.add);
+fflush(stdin);
+printf("..::email address:");
+gets(list.email);
+printf("\n");
+fwrite(&list,sizeof(list),1,ft);
+fclose(fp);
+fclose(ft);
+remove("contact.dll");
+rename("temp.dat","contact.dll");
+break;
+
+
+/* ********************delete contacts**********************/
+case 5:
+system("cls");
+fflush(stdin);
+printf("\n\n\t..::DELETE A CONTACT\n\t==========================\n\t..::Enter the name of contact to delete:");
+scanf("%[^\n]",&name);
+fp=fopen("contact.dll","r");
+ft=fopen("temp.dat","w");
+while(fread(&list,sizeof(list),1,fp)!=0)
+if (stricmp(name,list.name)!=0)
+fwrite(&list,sizeof(list),1,ft);
+fclose(fp);
+fclose(ft);
+remove("contact.dll");
+rename("temp.dat","contact.dll");
+break;
+
+default:
+printf("Invalid choice");
+break;
+}
+
+
+printf("\n\n\n..::Enter the Choice:\n\n\t[1] Main Menu\t\t[0] Exit\n");
+scanf("%d",&ch);
+switch (ch)
+{
+case 1:
+goto main;
+
+
+case 0:
+break;
+
+default:
+printf("Invalid choice");
+break;
+}
+
+return 0;
+}
+
