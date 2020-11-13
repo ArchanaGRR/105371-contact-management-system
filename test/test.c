@@ -2,7 +2,7 @@
 #include <CUnit/CUnit.h>
 
 #include <calculator.h>
-#define PROJECT_NAME    "Simple_Calculator"
+#define PROJECT_NAME    "contact management system"
 
 void test_addition(void);
 void test_subtraction(void);
